@@ -21,11 +21,11 @@
 				<Statement>...			<Statement>...
 				
 				
-<Op_expr> ::= (<Op_expr>) | <md_expr>
+<Op_expr> ::= (<Op_expr>) | <MD_expr>
 
-<md_expr> ::= <Num><fn_op><Num> | <as_expr>
+<MD_expr> ::= <Num><fn_op><Num> | <AS_expr>
 
-<as_expr> ::= <Num><op><Num> | <Num>
+<AS_expr> ::= <Num><op><Num> | <Num>
 
 																// returns Bool
 <Bool_expr> ::= <Not_expr><Bool_expr><Not_expr> | <Not_Expr> | <comp_expr>
@@ -35,4 +35,24 @@
 <comp_expr> ::= <Bool_expr>===<Bool_expr> | <String>===<String> | <op_expr><comp><op_expr>
 
 
+
+<var> ::= <String> | <Bool_expr> | <Op_expr>
+
 <op> ::= + | -
+
+<fn_op> ::= * | div | mod
+
+<comp_op> ::= <<< | >>> | === | >>== | <<==
+
+<bool_op> ::= & | /
+
+<not> ::= ~
+
+<Num> ::= ...|0|1|2|3|4|5|...
+
+<Bool> ::= 0|1
+
+<char> ::= a-z | A-Z | 0-9 | "-/    // last one refers to punctuation that can be used in strings (GOAL IS TO INCLUDE ASCII CHARS 32-126)
+
+<String> ::= "" | <char> | <String><char>  // allow empty string, single-char, and multi-char
+
