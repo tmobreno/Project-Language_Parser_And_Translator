@@ -1,4 +1,3 @@
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Scanner;
 
@@ -21,6 +20,12 @@ public class Parser {
     // Pattern matches to comparison operator
     private static Pattern comparison_value = Pattern.compile("^(<<<|>>>)$|^===$|^>>==$|^<<==$");
 
+    // Pattern matches to print command
+    private static Pattern print_value = Pattern.compile("^(prnt('\\s'))$");
+    
+    // Pattern matches to input command
+    private static Pattern input_command = Pattern.compile("^(inpt(\\s))$");
+    
     public static void main (String[] args){
         // Initializes a scanner to read user input
         Scanner in = new Scanner(System.in);
@@ -33,10 +38,37 @@ public class Parser {
             System.out.println("Enter Input: ");
             command = in.nextLine();
         }
+        
+        in.close();
     }
-
-    // Parses the input command
+    
+    // Checks for variable assignments
+    private static boolean varAssignment(String command) {
+    	String[] variables = command.split(" = ");
+    	String var = variables[0];
+    	if (isInteger(variables[1])) {
+    		int value = Integer.parseInt(variables[1]);
+    	} else if (isBoolean(variables[1])) {
+    		Boolean value = Boolean.parseBoolean(variables[1]);
+    	} else {
+    		String value = variables[1];
+    	}
+    	return variable_asgn_pattern.matcher(command).matches();
+    }
+    
+    // Parses the input command and checks for type of expression
     private static void parseCommand(String command){
+    	
+    }
+    
+    // Checks for input command
+    private static boolean isInputCommand(String command) {
+    	
+    }
+    
+    // Checks for print command
+    private static boolean isPrintCommand(String command) {
+    	
     }
 
     // Checks for operator expression pattern match (+ - *)
@@ -77,6 +109,8 @@ public class Parser {
         else {
             throw new IllegalArgumentException("Invalid boolean value");
         }
+        // Error code if it is neither the options above
+        return 404;
     }
 
     // if name or integer
