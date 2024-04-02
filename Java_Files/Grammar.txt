@@ -1,0 +1,38 @@
+<Statement> ::= <var_assign> | <Print> | <Func> | <conditional> | <Loop>
+
+
+<var_assign> ::= <var_name> = <var>.
+
+<var_name> ::= a-z... | A-Z...
+
+<Print> ::= prnt(<Statement>).
+
+<Func> ::= fn @ var... 		| fn @ var..., var
+		   		<Statement> | 		<Statement>
+		   		
+<conditional> ::= iffy 			| iffy
+				  	<Bool_expr> | 	<Bool_expr> 
+				  then 			| then
+				  	<Statement> | 	<Statement> 
+				  				  other 
+				  				  	<Statement>
+				  				  	
+<Loop> ::= while (<Bool_expr>)	| while (<Bool_expr>)
+				<Statement>...			<Statement>...
+				
+				
+<Op_expr> ::= (<Op_expr>) | <md_expr>
+
+<md_expr> ::= <Num><fn_op><Num> | <as_expr>
+
+<as_expr> ::= <Num><op><Num> | <Num>
+
+																// returns Bool
+<Bool_expr> ::= <Not_expr><Bool_expr><Not_expr> | <Not_Expr> | <comp_expr>
+
+<Not_expr> ::= <Not><Bool> | <Not>(<Bool_expr>) | <Bool>
+
+<comp_expr> ::= <Bool_expr>===<Bool_expr> | <String>===<String> | <op_expr><comp><op_expr>
+
+
+<op> ::= + | -
