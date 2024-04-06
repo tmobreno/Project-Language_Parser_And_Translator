@@ -36,9 +36,9 @@ public class Translator {
     // Runs all commands that were parsed, in the order they were parsed
     public static void runAllParsedCommands(){
         for (String[] str : parsedCommandsList) {
+            String head = str[0];
             // Create an array without the indicator head
             // Run functions based on this since it contains the actual full parsed command
-            String head = str[0];
             String[] command = Arrays.copyOfRange(str, 1, str.length);
 
             if(head.equals("iffy")){
