@@ -36,28 +36,32 @@ public class Translator {
     // Runs all commands that were parsed, in the order they were parsed
     public static void runAllParsedCommands(){
         for (String[] str : parsedCommandsList) {
-            if(str[0].equals("iffy")){
+            // Create an array without the indicator head
+            // Run functions based on this since it contains the actual full parsed command
+            String head = str[0];
+            String[] command = Arrays.copyOfRange(str, 1, str.length);
+
+            if(head.equals("iffy")){
 
             } 
-            else if (str[0].equals("*input_c")){
+            else if (head.equals("*input_c")){
 
             } 
-            else if (str[0].equals("var_a")){
-                newVariableAssignment(str);
+            else if (head.equals("var_a")){
+                newVariableAssignment(command);
             }
             // Need to add the rest
         }
     }
 
     // Assigns a new variable within the tuple list
-    private static void newVariableAssignment(String command) {
-    	String[] variables = command.split(" = ");
-    	String var = variables[0];
+    private static void newVariableAssignment(String[] str) {
+    	String var = str[0];
         Object value = null;
-        if(checkTupleList(var, variables[1])){
+        if(checkTupleList(var, str[2])){
             return;
         } else{
-            Tuple<String, Integer> t = new Tuple<>(var, checkValue(variables[1]));
+            Tuple<String, Integer> t = new Tuple<>(var, checkValue(str[2]));
             tupleList.add()
         }
     }
