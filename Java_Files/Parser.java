@@ -2,9 +2,6 @@ import java.util.regex.Pattern;
 import java.util.Scanner;
 
 public class Parser {
-    // Pattern matches statement to <variable> = <value> (not used)
-    private static Pattern variable_asgn_pattern = Pattern.compile("^(.+) = (.+)\\;$");
-
     // Pattern matches statement to any word
     private static Pattern name_value = Pattern.compile("\\w+$");
 
@@ -17,6 +14,9 @@ public class Parser {
     // Pattern matches to an operator
     private static Pattern operator_value = Pattern.compile("^[+\\-*]$");
 
+    // Pattern matches to single equivalency
+    private static Pattern equivalency_value =  Pattern.compile("^=$");
+
     // Pattern matches to comparison operator
     private static Pattern comparison_value = Pattern.compile("^(<<<|>>>)$|^===$|^>>==$|^<<==$");
 
@@ -26,49 +26,102 @@ public class Parser {
     // Pattern matches to input command
     private static Pattern input_command = Pattern.compile("^(inpt(\\s))$");
     
-    public static void main (String[] args){
-        // Initializes a scanner to read user input
-        Scanner in = new Scanner(System.in);
-        System.out.println("Enter Input: ");
-        String command = in.nextLine();
-
-        // While the user has not typed exit, ask for next line
-        while(!command.equals("exit")){
-            parseCommand(command);
-            System.out.println("Enter Input: ");
-            command = in.nextLine();
-        }
-        
-        in.close();
-    }
-    
-    // Checks for variable assignments
-    private static boolean varAssignment(String command) {
-    	String[] variables = command.split(" = ");
-    	String var = variables[0];
-    	if (isInteger(variables[1])) {
-    		int value = Integer.parseInt(variables[1]);
-    	} else if (isBoolean(variables[1])) {
-    		Boolean value = Boolean.parseBoolean(variables[1]);
-    	} else {
-    		String value = variables[1];
-    	}
-    	return variable_asgn_pattern.matcher(command).matches();
-    }
-    
     // Parses the input command and checks for type of expression
-    private static void parseCommand(String command){
-    	
+    // Returns an array of tokens which contains the entire split expression
+    // Inserts a header string to indicate what was entered and successfully parsed
+    // This is used by the translator to figure out what to do
+    public static String[] parseCommand(String command){
+        String[] tokens = command.split("\\s+");
+        String[] newTokens = new String[tokens.length + 1];
+
+    	if(isIffyCommand(command)){
+            newTokens[0] = "*iffy_c";
+            print("Iffy Command");
+        }
+        else if(isInputCommand(command)){
+            newTokens[0] = "*input_c";
+            print("Input Command");
+        }
+        else if(isPrintFunction(command)){
+            newTokens[0] = "*print_f";
+            print("Print Command");
+        }
+        else if(isFunctionCall(command)){
+            newTokens[0] = "*func_c";
+            print("Function Call");
+        }
+        else if(isComparisonExpression(command)){
+            newTokens[0] = "*comp_e";
+            print("Comparison Expression")
+        }
+        else if(isOperatorExpression(command)){
+            newTokens[0] = "*op_e";
+            print("Operator Expression");
+        } 
+        else if(isVariableAssignment(command)){
+            newTokens[0] = "*var_a";
+            print("Variable Assignment");
+        } 
+        else{
+            return null;
+        }
+
+        System.arraycopy(tokens, 0, newTokens, 1, tokens.length);
+        return newTokens;
     }
     
     // Checks for input command
     private static boolean isInputCommand(String command) {
-    	
+    	return false;
     }
     
     // Checks for print command
-    private static boolean isPrintCommand(String command) {
-    	
+    private static boolean isPrintFunction(String command) {
+        String[] tokens = command.split("\\s+");
+        String prnt = tokens[0];
+        
+        return (isPrintWord(prnt) && isFunctionCall(command));
+    }
+
+    // Checks for the word "print"
+    private static boolean isPrintWord(String command){
+        return command.equals("print");
+    }
+
+    // Checks for a function call
+    private static boolean isFunctionCall(String command){
+        String[] tokens = command.split("\\s+");
+        String name = tokens[0];
+        String at = tokens[1];
+
+        return(isAtSymbol(at));
+    }
+
+    // Checks for the "@" symbol
+    private static boolean isAtSymbol(String command){
+        return command.equals("@");
+    }
+
+    // Checks for an Iffy Command
+    private static boolean isIffyCommand(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length < 5){
+            return false;
+        }
+        String iffy = tokens[0];
+        String compExpr = tokens[1] + " " + tokens[2] + " " + tokens[3];
+        String then = tokens[4];
+        return(isIffyWord(iffy) && isComparisonExpression(compExpr) && isThenWord(then));
+    }
+
+    // Checks for the word "iffy"
+    private static boolean isIffyWord(String command){
+        return command.equals("iffy");
+    }
+
+    // Checks for the word "then"
+    private static boolean isThenWord(String command){
+        return command.equals("then");
     }
 
     // Checks for operator expression pattern match (+ - *)
@@ -81,7 +134,7 @@ public class Parser {
         String operator = tokens[1];
         String var2 = tokens[2];
 
-        return (isVariable(var1) && isOperator(operator) && isVariable(var2));
+        return (isVariable(var1) && isOperator(operator) && isVarOrInt(var2));
     }
 
     // Checks for comparison expression pattern match (< > ==)
@@ -94,7 +147,19 @@ public class Parser {
         String operator = tokens[1];
         String var2 = tokens[2];
 
-        return (isVariable(var1) && isComparisonOperator(operator) && isVariable(var2));
+        return (isVariable(var1) && isComparisonOperator(operator) && isVarOrIntOrBool(var2));
+    }
+
+    // Checks for variable assignments
+    private static boolean isVariableAssignment(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length != 3){
+            return false;
+        }
+        String var1 = tokens[0];
+        String operator = tokens[1];
+        String var2 = tokens[2];
+        return (isVariable(var1) && isEquivalencyOperator(operator) && isVarOrIntOrBool(var2));
     }
 
     // Maps "t" or "f" to 1 or 0
@@ -114,22 +179,27 @@ public class Parser {
     }
 
     // if name or integer
-    private static boolean isVariable(String str){
-        return (isName(str) || isInteger(str));
+    private static boolean isVarOrInt(String str){
+        return (isVariable(str) || isInteger(str));
+    }
+
+    // if name or integer or bool
+    private static boolean isVarOrIntOrBool(String str){
+        return (isVariable(str) || isInteger(str) || isBoolean(str));
     }
 
     // if any named variable
-    private static boolean isName(String str){
+    private static boolean isVariable(String str){
         return name_value.matcher(str).matches();
     }
 
     // if any integer
-    private static boolean isInteger(String str){
+    public static boolean isInteger(String str){
         return integer_value.matcher(str).matches();
     }
 
     // if "t" or "f"
-    private static boolean isBoolean(String str){
+    public static boolean isBoolean(String str){
         return boolean_value.matcher(str).matches();
     }
 
@@ -142,6 +212,10 @@ public class Parser {
     private static boolean isComparisonOperator(String str){
         return comparison_value.matcher(str).matches();
     }
-   
+
+    // if =
+    private static boolean isEquivalencyOperator(String str){
+        return equivalency_value.matcher(str).matches();
+    }
 }
     
