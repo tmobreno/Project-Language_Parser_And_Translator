@@ -1,5 +1,4 @@
 import java.util.regex.Pattern;
-import java.util.Scanner;
 
 public class Parser {
     // Pattern matches statement to any word
@@ -14,7 +13,7 @@ public class Parser {
     // Pattern matches to an operator
     private static Pattern operator_value = Pattern.compile("^[+\\-*]$");
 
-    // Pattern matches to single equivalency
+    // Pattern matches to single equivalence
     private static Pattern equivalency_value =  Pattern.compile("^=$");
 
     // Pattern matches to comparison operator
@@ -36,31 +35,31 @@ public class Parser {
 
     	if(isIffyCommand(command)){
             newTokens[0] = "*iffy_c";
-            print("Iffy Command");
+            System.out.print("Iffy Command");
         }
         else if(isInputCommand(command)){
             newTokens[0] = "*input_c";
-            print("Input Command");
+            System.out.print("Input Command");
         }
         else if(isPrintFunction(command)){
             newTokens[0] = "*print_f";
-            print("Print Command");
+            System.out.print("Print Command");
         }
         else if(isFunctionCall(command)){
             newTokens[0] = "*func_c";
-            print("Function Call");
+            System.out.print("Function Call");
         }
         else if(isComparisonExpression(command)){
             newTokens[0] = "*comp_e";
-            print("Comparison Expression")
+            System.out.print("Comparison Expression");
         }
         else if(isOperatorExpression(command)){
             newTokens[0] = "*op_e";
-            print("Operator Expression");
+            System.out.print("Operator Expression");
         } 
         else if(isVariableAssignment(command)){
             newTokens[0] = "*var_a";
-            print("Variable Assignment");
+            System.out.print("Variable Assignment");
         } 
         else{
             return null;
@@ -183,7 +182,7 @@ public class Parser {
         return (isVariable(str) || isInteger(str));
     }
 
-    // if name or integer or bool
+    // if name or integer or boolean
     private static boolean isVarOrIntOrBool(String str){
         return (isVariable(str) || isInteger(str) || isBoolean(str));
     }

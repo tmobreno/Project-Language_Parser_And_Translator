@@ -1,19 +1,18 @@
-import java.util.regex.Pattern;
 import java.util.Scanner;
-import Parser.java;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Translator {
 
     // Parser Instance
-    private Parser parser = new Parser();
+    private static Parser parser = new Parser();
 
     // Contains every parsed command
-    private List<String[]> parsedCommandsList = new ArrayList<>();
+    private static List<String[]> parsedCommandsList = new ArrayList<>();
 
     // Stores Variable Names along with their value
-    private List<Tuple<String, Object>> tupleList = new ArrayList<>();
+    private static List<Tuple<String, Object>> tupleList = new ArrayList<>();
 
     // Not needed for program, just for testing
     public static void main (String[] args){
@@ -25,7 +24,12 @@ public class Translator {
         // While the user has not typed exit, ask for next line
         // and parse the line, adding it to the list of commands
         while(!command.equals("exit")){
-            parsedCommandsList.add(parser.parseCommand(command));
+            try {
+				parsedCommandsList.add(parser.parseCommand(command));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             System.out.println("Enter Input: ");
             command = in.nextLine();
         }
@@ -61,8 +65,8 @@ public class Translator {
         if(checkTupleList(var, str[2])){
             return;
         } else{
-            Tuple<String, Integer> t = new Tuple<>(var, checkValue(str[2]));
-            tupleList.add()
+            Tuple<String, Object> t = new Tuple(var, checkValue(str[2]));
+            tupleList.add(t);
         }
     }
 
@@ -77,7 +81,7 @@ public class Translator {
         return false;
     }
 
-    // Determines if the value is a string, int, or boolean
+    // Determines if the value is a string, integer, or boolean
     private static Object checkValue(String s){
         if (parser.isInteger(s)) {
             return Integer.parseInt(s);
@@ -87,15 +91,4 @@ public class Translator {
             return s;
         }
     }
-}
-
-// Used for storing variables
-public class Tuple<X, Y> {
-    public final X first;
-    public final Y second;
-
-    public Tuple(X first, Y second) {
-        this.first = first;
-        this.second = second;
-    }
-}
+} 
