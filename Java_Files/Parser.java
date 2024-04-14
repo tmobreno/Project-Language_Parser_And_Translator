@@ -45,6 +45,10 @@ public class Parser {
             newTokens[0] = "*print_f";
             System.out.println("Print Command");
         }
+        else if(isPrintLineFunction(command)){
+            newTokens[0] = "*println_f";
+            System.out.println("Print Line Command");
+        }
         else if(isFunctionCall(command)){
             newTokens[0] = "*func_c";
             System.out.println("Function Call");
@@ -61,12 +65,17 @@ public class Parser {
             newTokens[0] = "*var_a";
             System.out.println("Variable Assignment");
         } 
+        else if(isStringVarAssignment(command)) {
+            newTokens[0] = "*s_var_a";
+            System.out.println("String Variable Assignment");
+        }
         else{
             System.out.println("Ignored");
             return null;
         }
 
         System.arraycopy(tokens, 0, newTokens, 1, tokens.length);
+
         return newTokens;
     }
     
@@ -82,10 +91,21 @@ public class Parser {
         
         return (isPrintWord(prnt) && isFunctionCall(command));
     }
+    
+    private static boolean isPrintLineFunction(String command) {
+        String[] tokens = command.split("\\s+");
+        String prnt = tokens[0];
+        
+        return (isPrintLineWord(prnt) && isFunctionCall(command));
+    }
 
     // Checks for the word "print"
     private static boolean isPrintWord(String command){
         return command.equals("prnt");
+    }
+    
+    private static boolean isPrintLineWord(String command){
+        return command.equals("prntln");
     }
 
     // Checks for a function call
@@ -164,7 +184,25 @@ public class Parser {
         String var2 = tokens[2];
         return (isVariable(var1) && isEquivalencyOperator(operator) && isVarOrIntOrBool(var2));
     }
+    
+    private static boolean isStringVarAssignment(String command){
+        String[] tokens = command.split("\\s+");
+        String[] tokens2 = command.split("\\s*=\\s*");
 
+        if(tokens.length < 3){
+            return false;
+        }
+        String var1 = tokens2[0];
+        String operator = tokens[1];
+        String var2 = tokens2[1];
+        
+        if(var2.charAt(0) != '"') {
+        	return false;
+        }
+        
+        return (isVariable(var1) && isEquivalencyOperator(operator));
+    }
+    
     // Maps "t" or "f" to 1 or 0
     private static int mapBooleanToInt(String str){
         if(isBoolean(str)){

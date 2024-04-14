@@ -29,16 +29,6 @@ public class Translator {
 				parsedCommandsList.add(parsing);
         	}
             
-            if (!parsedCommandsList.isEmpty()) {
-                String[] firstArray = parsedCommandsList.get(0);
-                for (String str : firstArray) {
-                    System.out.print(str + " ");
-                }
-                System.out.println();
-            } else {
-                System.out.println("The list is empty.");
-            }
-            
             System.out.println("Enter Input: ");
             command = in.nextLine();
         }
@@ -60,6 +50,12 @@ public class Translator {
             else if (head.equals("*input_c")){
 
             } 
+            else if (head.equals("*print_f")){
+            	printFunction(command);
+            } 
+            else if (head.equals("*println_f")){
+            	printLineFunction(command);
+            } 
             else if(head.equals("*op_e")) {
             	int result = newOperatorCommand(command);
             	System.out.println(result);
@@ -67,11 +63,27 @@ public class Translator {
             else if (head.equals("*var_a")){
                 newVariableAssignment(command);
             }
+            else if (head.equals("*s_var_a")){
+            	newStringVariableAssignment(command);
+            }
             // Need to add the rest
         }
     }
 
     // Assigns a new variable within the tuple list
+    private static void newStringVariableAssignment(String[] str) {
+    	String var = str[0];
+        String value = "";
+        int i = 2;
+    	for(; i < str.length - 1; i++) {
+        	value += str[i] + " ";
+    	}
+    	value += str[i];
+    	
+        Tuple<String, Object> t = new Tuple(var, value);
+        tupleList.add(t);
+    }
+    
     private static void newVariableAssignment(String[] str) {
     	String var = str[0];
         Object value = null;
@@ -135,6 +147,46 @@ public class Translator {
             }
         }
         return null;
+    }
+    
+    public static Object getObjectFromTuples(String searchString) {
+        for (Tuple<String, Object> tuple : tupleList) {
+            if (tuple.first.equals(searchString)) {
+                try {
+                    return tuple.second.toString();
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static void printFunction(String [] str) {
+    	if(str.length == 2) {
+    		System.out.print(" ");
+    	}
+    	else {
+    		Object found = getObjectFromTuples(str[2]);
+    		if(found.toString().charAt(0) == '"') {
+    			found = found.toString().substring(1, found.toString().length() - 1);
+    		}
+
+    		System.out.print(found);
+    	}
+    }
+    
+    public static void printLineFunction(String [] str) {
+    	if(str.length == 2) {
+    		System.out.println("");
+    	}
+    	else {
+        	Object found = getObjectFromTuples(str[2]);
+        	if(found.toString().charAt(0) == '"') {
+        		found = found.toString().substring(1, found.toString().length() - 1);
+        	}
+        	System.out.println(found);
+    	}
     }
 
     // Checks the tuple list to find if the variable already exists, then updates it
