@@ -35,33 +35,34 @@ public class Parser {
 
     	if(isIffyCommand(command)){
             newTokens[0] = "*iffy_c";
-            System.out.print("Iffy Command");
+            System.out.println("Iffy Command");
         }
         else if(isInputCommand(command)){
             newTokens[0] = "*input_c";
-            System.out.print("Input Command");
+            System.out.println("Input Command");
         }
         else if(isPrintFunction(command)){
             newTokens[0] = "*print_f";
-            System.out.print("Print Command");
+            System.out.println("Print Command");
         }
         else if(isFunctionCall(command)){
             newTokens[0] = "*func_c";
-            System.out.print("Function Call");
+            System.out.println("Function Call");
         }
         else if(isComparisonExpression(command)){
             newTokens[0] = "*comp_e";
-            System.out.print("Comparison Expression");
+            System.out.println("Comparison Expression");
         }
         else if(isOperatorExpression(command)){
             newTokens[0] = "*op_e";
-            System.out.print("Operator Expression");
+            System.out.println("Operator Expression");
         } 
         else if(isVariableAssignment(command)){
             newTokens[0] = "*var_a";
-            System.out.print("Variable Assignment");
+            System.out.println("Variable Assignment");
         } 
         else{
+            System.out.println("Ignored");
             return null;
         }
 
@@ -84,12 +85,15 @@ public class Parser {
 
     // Checks for the word "print"
     private static boolean isPrintWord(String command){
-        return command.equals("print");
+        return command.equals("prnt");
     }
 
     // Checks for a function call
     private static boolean isFunctionCall(String command){
         String[] tokens = command.split("\\s+");
+        if(tokens.length < 2){
+        	return false;
+        }
         String name = tokens[0];
         String at = tokens[1];
 

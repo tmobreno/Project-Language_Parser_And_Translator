@@ -24,16 +24,25 @@ public class Translator {
         // While the user has not typed exit, ask for next line
         // and parse the line, adding it to the list of commands
         while(!command.equals("exit")){
-            try {
-				parsedCommandsList.add(parser.parseCommand(command));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+        	String[] parsing = Parser.parseCommand(command);
+        	if(parsing != null) {
+				parsedCommandsList.add(parsing);
+        	}
+            
+            if (!parsedCommandsList.isEmpty()) {
+                String[] firstArray = parsedCommandsList.get(0);
+                for (String str : firstArray) {
+                    System.out.print(str + " ");
+                }
+                System.out.println();
+            } else {
+                System.out.println("The list is empty.");
+            }
+            
             System.out.println("Enter Input: ");
             command = in.nextLine();
         }
-        
+        runAllParsedCommands();
         in.close();
     }
 
@@ -45,13 +54,17 @@ public class Translator {
             // Run functions based on this since it contains the actual full parsed command
             String[] command = Arrays.copyOfRange(str, 1, str.length);
 
-            if(head.equals("iffy")){
+            if(head.equals("*iffy_c")){
 
             } 
             else if (head.equals("*input_c")){
 
             } 
-            else if (head.equals("var_a")){
+            else if(head.equals("*op_e")) {
+            	int result = newOperatorCommand(command);
+            	System.out.println(result);
+            }
+            else if (head.equals("*var_a")){
                 newVariableAssignment(command);
             }
             // Need to add the rest
@@ -68,6 +81,60 @@ public class Translator {
             Tuple<String, Object> t = new Tuple(var, checkValue(str[2]));
             tupleList.add(t);
         }
+    }
+    
+    // Performs an expression
+    private static Integer newOperatorCommand(String [] str) {
+    	int first;
+    	int second;
+    	
+    	
+    	if(isInteger(str[0])) {
+    		first = Integer.parseInt(str[0]);
+    	} else {
+    		first = getObjectAsInteger(str[0]);
+    	}
+    	
+    	if(isInteger(str[2])) {
+    		second = Integer.parseInt(str[2]);
+    	} else {
+    		second = getObjectAsInteger(str[2]);
+    	}
+    	
+		if(str[1].equals("+")) {
+			return first + second;
+		}
+    	
+		if(str[1].equals("-")) {
+			return first - second;
+		}
+    	
+		if(str[1].equals("*")) {
+			return first * second;
+		}
+		return 0;
+    }
+    
+    public static boolean isInteger(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
+    public static Integer getObjectAsInteger(String searchString) {
+        for (Tuple<String, Object> tuple : tupleList) {
+            if (tuple.first.equals(searchString)) {
+                try {
+                    return Integer.parseInt(tuple.second.toString());
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     // Checks the tuple list to find if the variable already exists, then updates it
