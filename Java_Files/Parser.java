@@ -69,6 +69,10 @@ public class Parser {
             newTokens[0] = "*s_var_a";
             System.out.println("String Variable Assignment");
         }
+        else if(isVariableOperatorAssignment(command)) {
+            newTokens[0] = "*var_op_a";
+            System.out.println("Variable Operator Assignment");
+        }
         else{
             System.out.println("Ignored");
             return null;
@@ -185,6 +189,7 @@ public class Parser {
         return (isVariable(var1) && isEquivalencyOperator(operator) && isVarOrIntOrBool(var2));
     }
     
+    // Assign string with format of " at start of string
     private static boolean isStringVarAssignment(String command){
         String[] tokens = command.split("\\s+");
         String[] tokens2 = command.split("\\s*=\\s*");
@@ -201,6 +206,19 @@ public class Parser {
         }
         
         return (isVariable(var1) && isEquivalencyOperator(operator));
+    }
+    
+    // Assign var based on an operation
+    private static boolean isVariableOperatorAssignment(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length < 3){
+            return false;
+        }
+        String var1 = tokens[0];
+        String operator = tokens[1];
+        String var2 = tokens[2];
+        String operation = tokens[3];
+        return (isVariable(var1) && isEquivalencyOperator(operator) && isVarOrIntOrBool(var2) && isOperator(operation));
     }
     
     // Maps "t" or "f" to 1 or 0

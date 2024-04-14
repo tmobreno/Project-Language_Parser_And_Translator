@@ -66,6 +66,12 @@ public class Translator {
             else if (head.equals("*s_var_a")){
             	newStringVariableAssignment(command);
             }
+            else if (head.equals("*var_op_a")){
+                String[] operation = Arrays.copyOfRange(command, 2, str.length);
+            	int result = newOperatorCommand(operation);
+            	command[2] = Integer.toString(result);
+            	newVariableAssignment(command);
+            }
             // Need to add the rest
         }
     }
@@ -162,6 +168,7 @@ public class Translator {
         return null;
     }
     
+    // prnt @ will just print a new space
     public static void printFunction(String [] str) {
     	if(str.length == 2) {
     		System.out.print(" ");
@@ -176,6 +183,7 @@ public class Translator {
     	}
     }
     
+    // prnt @ will just print a new line
     public static void printLineFunction(String [] str) {
     	if(str.length == 2) {
     		System.out.println("");
