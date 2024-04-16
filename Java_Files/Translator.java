@@ -36,11 +36,31 @@ public class Translator {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Translate each line and write to the output file
-            	String[] parsing = Parser.parseCommand(line);
-            	if(parsing != null) {
-    				parsedCommandsList.add(parsing);
+            	if(Parser.isFunctionCreation(line)) {
+                    StringBuilder resultBuilder = new StringBuilder();
+                    resultBuilder.append(line.trim()).append(" ");
+                    while ((line = reader.readLine()) != null) {
+                        if (line.trim().equals("end")) {
+                            resultBuilder.append(line.trim()).append(";");
+                            break;
+                        }                
+                        resultBuilder.append(line.trim()).append(";");
+                    }
+                    String input = resultBuilder.toString().trim();
+            		System.out.println(input);
+
+                	String[] parsing = Parser.parseFunction(input);
+
             	}
+            	else {
+                    // Translate each line and write to the output file
+                	String[] parsing = Parser.parseCommand(line);
+
+                    if(parsing != null) {
+        				parsedCommandsList.add(parsing);
+                	}
+            	}
+
             }
             runAllParsedCommands();
 

@@ -1,4 +1,6 @@
-x = 5
-y = 6
+myFunc (a1, a2) :
+x = a1
+y = a2
 x = x + y
 prntln @ x
+end

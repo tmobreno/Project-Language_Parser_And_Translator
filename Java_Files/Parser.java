@@ -36,7 +36,8 @@ public class Parser {
     // Returns an array of tokens which contains the entire split expression
     // Inserts a header string to indicate what was entered and successfully parsed
     // This is used by the translator to figure out what to do
-    public static String[] parseCommand(String command){
+    
+    public static String[] parseCommand(String command){    	
         String[] tokens = command.split("\\s+");
         String[] newTokens = new String[tokens.length + 1];
 
@@ -102,6 +103,26 @@ public class Parser {
         return newTokens;
     }
     
+    public static String[] parseFunction(String function) {
+		String[] parts = function.split(":");
+		String firstPart = parts[0].trim() + ";";
+		String[] variables = parts[1].trim().split("[()]")[1].split(",");
+		String secondPart = String.join("; ", variables) + ";";
+		String thirdPart = parts[1].trim().replaceFirst("^[^(]+\\(.*?\\)\\s*:", "")
+                .replaceAll("\\n", "; ") + ";";
+		String[] result = {firstPart, secondPart, thirdPart};
+
+        String[] newTokens = new String[result.length + 1];
+		
+        newTokens[0] = "*creation";
+        System.arraycopy(result, 0, newTokens, 1, result.length);
+        for (String part : result) {
+            System.out.println(part);
+        }
+        System.out.println("Function Creation");
+        return newTokens;
+    }
+    
     // Checks for input command
     private static boolean isInputCommand(String command) {
     	return false;
@@ -132,6 +153,21 @@ public class Parser {
     }
 
     // Checks for a function call
+    public static boolean isFunctionCreation(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length < 2){
+        	return false;
+        }
+        String name = tokens[0];
+        String param = tokens[1];
+                
+        if(param.charAt(0) == '(') {
+        	return true;
+        }
+        return false;
+    }
+    
+    // Checks for a function creation
     private static boolean isFunctionCall(String command){
         String[] tokens = command.split("\\s+");
         if(tokens.length < 2){
