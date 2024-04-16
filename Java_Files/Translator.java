@@ -72,6 +72,20 @@ public class Translator {
             	command[2] = Integer.toString(result);
             	newVariableAssignment(command);
             }
+            else if (head.equals("*b_var_op_a")){
+                String[] expr = Arrays.copyOfRange(command, 2, str.length);
+                boolean res;
+
+                if (expr[0].equals("~")) { 
+                    res = newBoolNotCommand(expr);
+                }
+                else{                         // bool operator expression!
+                    res = newBoolOperatorCommand(expr);
+                }
+                command[2] = Boolean.toString(res);
+                newVariableAssignment(command);
+            }
+
             // Need to add the rest
         }
     }
@@ -132,6 +146,57 @@ public class Translator {
 		}
 		return 0;
     }
+
+    // Performs boolean opreation evaluation (or(/) + and(&)).
+    private static Boolean newBoolOperatorCommand(String[] cmd){
+        boolean b_var1;
+        boolean b_var2;
+
+        // change 1st boolean var to a boolean obj...
+        if (isBool(cmd[0])) {
+            b_var1 = tf_to_fullBool(cmd[0]); 
+        } else {
+            b_var1 = getObjectAsBool(cmd[0]);
+        }
+        // change 2nd boolean var to a boolean obj...
+        if (isBool(cmd[2])){
+            b_var2 = tf_to_fullBool(cmd[2]);
+        } else {
+            b_var2 = getObjectAsBool(cmd[2]);
+        }
+        // now evaluate, given the two boolean objects
+        if (cmd[1].equals("&")){   // AND
+            return (b_var1 && b_var2);
+        }
+        if (cmd[1].equals("/")){   // OR
+            return (b_var1 || b_var2);
+        }
+        return null;  // shouldn't be possible to reach
+    }
+
+    // Performs 'not' command (bools). 
+    private static boolean newBoolNotCommand(String[] cmd){
+        boolean start_bool;
+
+        if (isBool(cmd[1])) {
+            start_bool = tf_to_fullBool(cmd[1]);
+        }
+        else{
+            start_bool = getObjectAsBool(cmd[1]);
+        }
+        return (!start_bool);
+    }
+
+    // converts 't' and 'f' to actual boolean objects
+    private static Boolean tf_to_fullBool(String str) {
+        if (str.equals("t")){
+            return true;
+        }
+        if (str.equals("f")) {
+            return false;
+        }
+        return null;
+    }
     
     public static boolean isInteger(String str) {
         try {
@@ -141,7 +206,19 @@ public class Translator {
             return false;
         }
     }
-    
+
+    public static boolean isBool(String str) {
+        if (str.length() != 1){
+            return false;
+        }
+        Boolean asBool = tf_to_fullBool(str);
+        if (asBool == null){    // couldn't parse it into a bool
+            return false;
+        }
+        return true;
+    }
+
+    // Accesses & returns the integer value associated with the given key
     public static Integer getObjectAsInteger(String searchString) {
         for (Tuple<String, Object> tuple : tupleList) {
             if (tuple.first.equals(searchString)) {
@@ -154,7 +231,18 @@ public class Translator {
         }
         return null;
     }
-    
+
+    // Accesses & returns the boolean value associated with the given key
+    public static Boolean getObjectAsBool(String searchString) {
+        for (Tuple<String, Object> tuple : tupleList) {
+            if (tuple.first.equals(searchString)) {
+                return Boolean.parseBoolean(tuple.second.toString());
+            }
+        }
+        return null;
+    }
+
+    // Accesses & returns the object associated with the given key
     public static Object getObjectFromTuples(String searchString) {
         for (Tuple<String, Object> tuple : tupleList) {
             if (tuple.first.equals(searchString)) {
@@ -213,7 +301,7 @@ public class Translator {
         if (parser.isInteger(s)) {
             return Integer.parseInt(s);
         } else if (parser.isBoolean(s)) {
-            return Boolean.parseBoolean(s);
+            return tf_to_fullBool(s);
         } else {
             return s;
         }
