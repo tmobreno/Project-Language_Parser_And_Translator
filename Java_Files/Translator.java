@@ -60,6 +60,10 @@ public class Translator {
             	int result = newOperatorCommand(command);
             	System.out.println(result);
             }
+            else if (head.equals("*comp_e")) {
+                boolean result = newComparisonCommand(command);
+                System.out.println(result);
+            }
             else if (head.equals("*var_a")){
                 newVariableAssignment(command);
             }
@@ -78,6 +82,9 @@ public class Translator {
 
                 if (expr[0].equals("~")) { 
                     res = newBoolNotCommand(expr);
+                }
+                else if (!(expr[1].equals("&")) && !(expr[1].equals("/"))) {
+                    res = newComparisonCommand(expr);
                 }
                 else{                         // bool operator expression!
                     res = newBoolOperatorCommand(expr);
@@ -185,6 +192,41 @@ public class Translator {
             start_bool = getObjectAsBool(cmd[1]);
         }
         return (!start_bool);
+    }
+
+    // Performs a comparison (on ints)
+    private static Boolean newComparisonCommand(String cmd[]){
+        int first;
+        int second;
+
+        if(isInteger(cmd[0])) {
+    		first = Integer.parseInt(cmd[0]);
+    	} else {
+    		first = getObjectAsInteger(cmd[0]);
+    	}
+    	
+    	if(isInteger(cmd[2])) {
+    		second = Integer.parseInt(cmd[2]);
+    	} else {
+    		second = getObjectAsInteger(cmd[2]);
+    	}
+
+        if (cmd[1].equals("<<<")){
+            return (first < second);
+        } 
+        if (cmd[1].equals("<<==")){
+            return (first <= second);
+        }
+        if (cmd[1].equals(">>>")){
+            return (first > second);
+        }
+        if (cmd[1].equals(">>==")){
+            return (first >= second);
+        }
+        if (cmd[1].equals("===")){
+            return (first == second);
+        }
+        return null;
     }
 
     // converts 't' and 'f' to actual boolean objects
