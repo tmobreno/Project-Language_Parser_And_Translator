@@ -12,7 +12,7 @@ public class Parser {
     private static Pattern boolean_value = Pattern.compile("^t$|^f$");
 
     // Pattern matches to an operator
-    private static Pattern operator_value = Pattern.compile("^[+\\-*]$");
+    private static Pattern operator_value = Pattern.compile("^[+\\-*/%]$");
 
     // Pattern matches to single equivalence
     private static Pattern equivalency_value =  Pattern.compile("^=$");

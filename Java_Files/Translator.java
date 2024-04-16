@@ -2,6 +2,11 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Translator {
 
@@ -16,24 +21,32 @@ public class Translator {
 
     // Not needed for program, just for testing
     public static void main (String[] args){
-        // Initializes a scanner to read user input
-        Scanner in = new Scanner(System.in);
-        System.out.println("Enter Input: ");
-        String command = in.nextLine();
-
-        // While the user has not typed exit, ask for next line
-        // and parse the line, adding it to the list of commands
-        while(!command.equals("exit")){
-        	String[] parsing = Parser.parseCommand(command);
-        	if(parsing != null) {
-				parsedCommandsList.add(parsing);
-        	}
-            
-            System.out.println("Enter Input: ");
-            command = in.nextLine();
+        if (args.length != 1) {
+            System.out.println("Usage: java Main <inputFile>");
+            return;
         }
-        runAllParsedCommands();
-        in.close();
+        
+        String inputFileName = args[0];
+        
+        translateAndExecuteProgram(inputFileName);
+        
+    }
+    
+    private static void translateAndExecuteProgram(String inputFileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Translate each line and write to the output file
+            	String[] parsing = Parser.parseCommand(line);
+            	if(parsing != null) {
+    				parsedCommandsList.add(parsing);
+            	}
+            }
+            runAllParsedCommands();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Runs all commands that were parsed, in the order they were parsed
@@ -151,6 +164,15 @@ public class Translator {
 		if(str[1].equals("*")) {
 			return first * second;
 		}
+		
+		if(str[1].equals("/")) {
+			return first / second;
+		}
+		
+		if(str[1].equals("%")) {
+			return first % second;
+		}
+		
 		return 0;
     }
 
