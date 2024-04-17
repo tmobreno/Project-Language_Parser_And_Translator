@@ -49,6 +49,10 @@ public class Parser {
             newTokens[0] = "*input_c";
             System.out.println("Input Command");
         }
+        else if(isLoopStatement(command)){
+            newTokens[0] = "*loop_s";
+            System.out.println("Loop Statement");
+        }
         else if(isPrintFunction(command)){
             newTokens[0] = "*print_f";
             System.out.println("Print Command");
@@ -127,6 +131,17 @@ public class Parser {
     private static boolean isInputCommand(String command) {
     	return false;
     }
+    
+    private static boolean isLoopStatement(String command) {
+        String[] tokens = command.split("\\s+");
+        String prnt = tokens[0];
+        return (isLoopWord(prnt) && isFunctionCall(command));
+    }
+    
+    private static boolean isLoopWord(String command){
+        return command.equals("while");
+    }
+    
     
     // Checks for print command
     private static boolean isPrintFunction(String command) {

@@ -390,6 +390,19 @@ public class Translator {
     		System.out.print(" ");
     	}
     	else {
+    		if(str[2].charAt(0) == '"') {
+                StringBuilder resultBuilder = new StringBuilder();
+    			for(int i = 2; i < str.length; i++) {
+    				String toAdd = str[i].replace("\"", "");
+    				if (i+1 != str.length) {
+        				resultBuilder.append(toAdd + " ");
+    				} else {
+        				resultBuilder.append(toAdd);
+    				}
+    			}
+    			System.out.print(resultBuilder.toString());
+    			return;
+    		}
     		Object found = getObjectFromTuples(str[2]);
     		if(found.toString().charAt(0) == '"') {
     			found = found.toString().substring(1, found.toString().length() - 1);
