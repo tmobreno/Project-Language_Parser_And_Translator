@@ -21,7 +21,7 @@ public class Parser {
     private static Pattern comparison_value = Pattern.compile("^(<<<|>>>)$|^===$|^>>==$|^<<==$");
 
     // Pattern matches to comparison operator
-    private static Pattern bool_comparison_value = Pattern.compile("^&$|^/$");
+    private static Pattern bool_comparison_value = Pattern.compile("^&$|^//$");
 
     // Pattern matches to print command
     private static Pattern print_value = Pattern.compile("^(prnt('\\s'))$");

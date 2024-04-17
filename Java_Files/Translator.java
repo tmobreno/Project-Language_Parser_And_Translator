@@ -76,64 +76,58 @@ public class Translator {
     // Runs all commands that were parsed, in the order they were parsed
     public static void runAllParsedCommands(List<String[]> commandsList){
         for (String[] str : commandsList) {
-            String head = str[0];
-            // Create an array without the indicator head
-            // Run functions based on this since it contains the actual full parsed command
-            String[] command = Arrays.copyOfRange(str, 1, str.length);
+            runCommand(str);
+        }
+    }
 
-            if(head.equals("*func_c")) {
-            	performFunction(command);
-            }
-            if(head.equals("*iffy_c")){
+    private static void runCommand(String[] str){
+        String head = str[0];
+        // Create an array without the indicator head
+        // Run functions based on this since it contains the actual full parsed command
+        String[] command = Arrays.copyOfRange(str, 1, str.length);
 
-            } 
-            else if (head.equals("*input_c")){
+        if(head.equals("*func_c")) {
+        	performFunction(command);
+        }
+        if(head.equals("*iffy_c")){
 
-            } 
-            else if (head.equals("*print_f")){
-            	printFunction(command);
-            } 
-            else if (head.equals("*println_f")){
-            	printLineFunction(command);
-            } 
-            else if(head.equals("*op_e")) {
-            	int result = newOperatorCommand(command);
-            	System.out.println(result);
-            }
-            else if (head.equals("*comp_e")) {
-                boolean result = newComparisonCommand(command);
-                System.out.println(result);
-            }
-            else if (head.equals("*var_a")){
-                newVariableAssignment(command);
-            }
-            else if (head.equals("*s_var_a")){
-            	newStringVariableAssignment(command);
-            }
-            else if (head.equals("*var_op_a")){
-                String[] operation = Arrays.copyOfRange(command, 2, str.length);
-            	int result = newOperatorCommand(operation);
-            	command[2] = Integer.toString(result);
-            	newVariableAssignment(command);
-            }
-            else if (head.equals("*b_var_op_a")){
-                String[] expr = Arrays.copyOfRange(command, 2, str.length);
-                boolean res;
+        } 
+        else if (head.equals("*input_c")){
 
-                if (expr[0].equals("~")) { 
-                    res = newBoolNotCommand(expr);
-                }
-                else if (!(expr[1].equals("&")) && !(expr[1].equals("/"))) {
-                    res = newComparisonCommand(expr);
-                }
-                else{                         // bool operator expression!
-                    res = newBoolOperatorCommand(expr);
-                }
-                command[2] = Boolean.toString(res);
-                newVariableAssignment(command);
-            }
+        } 
+        else if (head.equals("*print_f")){
+        	printFunction(command);
+        } 
+        else if (head.equals("*println_f")){
+        	printLineFunction(command);
+        } 
+        else if(head.equals("*op_e")) {
+        	int result = newOperatorCommand(command);
+            System.out.println(result);
+        }
+        else if (head.equals("*comp_e")) {
+            boolean result = newComparisonCommand(command);
+            System.out.println(result);
+        }
+        else if (head.equals("*var_a")){
+            newVariableAssignment(command);
+        }
+        else if (head.equals("*s_var_a")){
+            newStringVariableAssignment(command);
+        }
+        else if (head.equals("*var_op_a")){
+            String[] operation = Arrays.copyOfRange(command, 2, str.length);
+        	int result = newOperatorCommand(operation);
+        	command[2] = Integer.toString(result);
+        	newVariableAssignment(command);
+        }
+        else if (head.equals("*b_var_op_a")){
+            String[] expr = Arrays.copyOfRange(command, 2, str.length);
 
-            // Need to add the rest
+            boolean res = doBoolCommand(expr);
+            
+            command[2] = Boolean.toString(res);
+            newVariableAssignment(command);
         }
     }
     
@@ -261,7 +255,7 @@ public class Translator {
         if (cmd[1].equals("&")){   // AND
             return (b_var1 && b_var2);
         }
-        if (cmd[1].equals("/")){   // OR
+        if (cmd[1].equals("//")){   // OR
             return (b_var1 || b_var2);
         }
         return null;  // shouldn't be possible to reach
@@ -455,5 +449,32 @@ public class Translator {
         } else {
             return s;
         }
+    }
+
+    // calls correct boolean function and returns evaluated return val
+    private static boolean doBoolCommand(String[] command){
+        
+        boolean res;
+
+        if (command.length == 1){
+            // then it's either t/f or a var
+            if (command[0].equals("t") || command[0].equals("f")){
+                res = tf_to_fullBool(command[0]);
+            }
+            else{
+                // it's a var you need to go access. 
+                res = getObjectAsBool(command[0]);
+            }
+        }
+        else if (command[0].equals("~")) { 
+            res = newBoolNotCommand(command);
+        }
+        else if (!(command[1].equals("&")) && !(command[1].equals("//"))) {
+            res = newComparisonCommand(command);
+        }
+        else{ 
+            res = newBoolOperatorCommand(command);
+        }        
+        return res;
     }
 } 
