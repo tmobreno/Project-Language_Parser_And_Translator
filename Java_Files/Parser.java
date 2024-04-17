@@ -104,21 +104,22 @@ public class Parser {
     }
     
     public static String[] parseFunction(String function) {
-		String[] parts = function.split(":");
-		String firstPart = parts[0].trim() + ";";
-		String[] variables = parts[1].trim().split("[()]")[1].split(",");
-		String secondPart = String.join("; ", variables) + ";";
-		String thirdPart = parts[1].trim().replaceFirst("^[^(]+\\(.*?\\)\\s*:", "")
-                .replaceAll("\\n", "; ") + ";";
-		String[] result = {firstPart, secondPart, thirdPart};
+    	int firstSpaceIndex = function.indexOf(" ");
+    	String functionName = function.substring(0, firstSpaceIndex).trim();
+    	String parameters = function.replaceAll("^.*?\\((.*?)\\).*$", "$1").trim();
+    	String functionBody = function.substring(function.indexOf(":") + 1).trim();
+    	
+		String[] result = {functionName, parameters, functionBody};
 
         String[] newTokens = new String[result.length + 1];
 		
         newTokens[0] = "*creation";
         System.arraycopy(result, 0, newTokens, 1, result.length);
+        
         for (String part : result) {
             System.out.println(part);
         }
+        
         System.out.println("Function Creation");
         return newTokens;
     }

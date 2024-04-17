@@ -47,7 +47,6 @@ public class Translator {
                         resultBuilder.append(line.trim()).append(";");
                     }
                     String input = resultBuilder.toString().trim();
-            		System.out.println(input);
 
                 	String[] parsing = Parser.parseFunction(input);
 
