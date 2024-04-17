@@ -1,6 +1,17 @@
-myFunc (a1, a2) :
-x = a1
-y = a2
-x = x + y
+myFunc (a, b) :
+x = 1
+y = 2
+z = a + 1
+x = b + 1
+prntln @ "call one"
+prntln @ z
 prntln @ x
 end
+
+
+
+myFunc @ 1, 2
+
+myFunc @ 5, 10
+myFunc @ 2, 5
+myFunc @ 2, 7

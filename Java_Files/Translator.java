@@ -15,6 +15,8 @@ public class Translator {
 
     // Contains every parsed command
     private static List<String[]> parsedCommandsList = new ArrayList<>();
+    
+    private static List<String[]> functionsList = new ArrayList<>();
 
     // Stores Variable Names along with their value
     private static List<Tuple<String, Object>> tupleList = new ArrayList<>();
@@ -49,7 +51,10 @@ public class Translator {
                     String input = resultBuilder.toString().trim();
 
                 	String[] parsing = Parser.parseFunction(input);
-
+                	
+                	if(parsing != null) {
+                		functionsList.add(parsing);
+                	}
             	}
             	else {
                     // Translate each line and write to the output file
@@ -61,7 +66,7 @@ public class Translator {
             	}
 
             }
-            runAllParsedCommands();
+            runAllParsedCommands(parsedCommandsList);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -69,13 +74,16 @@ public class Translator {
     }
 
     // Runs all commands that were parsed, in the order they were parsed
-    public static void runAllParsedCommands(){
-        for (String[] str : parsedCommandsList) {
+    public static void runAllParsedCommands(List<String[]> commandsList){
+        for (String[] str : commandsList) {
             String head = str[0];
             // Create an array without the indicator head
             // Run functions based on this since it contains the actual full parsed command
             String[] command = Arrays.copyOfRange(str, 1, str.length);
 
+            if(head.equals("*func_c")) {
+            	performFunction(command);
+            }
             if(head.equals("*iffy_c")){
 
             } 
@@ -128,6 +136,43 @@ public class Translator {
             // Need to add the rest
         }
     }
+    
+    private static void performFunction(String[] str) {
+    	String funcName = str[0];
+    	
+    	for (String[] function : functionsList) {
+    	    String firstWord = function[0].trim().split("\\s+")[0].replaceAll(";", "");
+    	    if (firstWord.equals(funcName)) {
+    	    	String[] parametersPart = function[0].split(";");
+    	    	String[] parametersArray = parametersPart[1].split(",");
+    	    	for (int i = 0; i < parametersArray.length; i++) {
+    	    	    parametersArray[i] = parametersArray[i].trim();
+    	    	}
+    	    	for (int i = 0; i < parametersArray.length; i++) {
+    	    		String[] command = new String[3];
+    	    		command[0] = parametersArray[i];
+    	    		command[1] = null;
+    	    		command[2] = str[2+i].replaceAll(",", "");
+    	    		newVariableAssignment(command);
+    	    	}
+    	    	
+    	    	String functionBody = function[1];
+    	    	String[] lines = functionBody.split(";");
+	    	    List<String[]> tempCommandsList = new ArrayList<>();
+
+    	    	for (String line : lines) {
+    	    	    line = line.trim();
+                	String[] parsing = Parser.parseCommand(line);
+                    if(parsing != null) {
+                    	tempCommandsList.add(parsing);
+                	}
+    	    	}
+	    	    runAllParsedCommands(tempCommandsList);
+    	        break;
+    	    }
+    	}
+    }
+    
 
     // Assigns a new variable within the tuple list
     private static void newStringVariableAssignment(String[] str) {
@@ -354,12 +399,21 @@ public class Translator {
     	}
     }
     
-    // prnt @ will just print a new line
+    // prntln @ will just print a new line
     public static void printLineFunction(String [] str) {
     	if(str.length == 2) {
     		System.out.println("");
     	}
     	else {
+    		if(str[2].charAt(0) == '"') {
+                StringBuilder resultBuilder = new StringBuilder();
+    			for(int i = 2; i < str.length; i++) {
+    				String toAdd = str[i].replace("\"", "");
+    				resultBuilder.append(toAdd + " ");
+    			}
+    			System.out.println(resultBuilder.toString());
+    			return;
+    		}
         	Object found = getObjectFromTuples(str[2]);
         	if(found.toString().charAt(0) == '"') {
         		found = found.toString().substring(1, found.toString().length() - 1);

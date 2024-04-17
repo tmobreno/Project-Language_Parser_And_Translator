@@ -108,20 +108,19 @@ public class Parser {
     	String functionName = function.substring(0, firstSpaceIndex).trim();
     	String parameters = function.replaceAll("^.*?\\((.*?)\\).*$", "$1").trim();
     	String functionBody = function.substring(function.indexOf(":") + 1).trim();
-    	
-		String[] result = {functionName, parameters, functionBody};
+    	String firstLine = functionName + "; " + parameters;
+
+    	// Store the two lines in a string array
+    	String[] result = {firstLine, functionBody};
 
         String[] newTokens = new String[result.length + 1];
-		
-        newTokens[0] = "*creation";
-        System.arraycopy(result, 0, newTokens, 1, result.length);
         
         for (String part : result) {
             System.out.println(part);
         }
         
         System.out.println("Function Creation");
-        return newTokens;
+        return result;
     }
     
     // Checks for input command
