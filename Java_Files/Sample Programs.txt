@@ -1,0 +1,80 @@
+1)
+x = 5
+y = "this"
+prnt @ x
+prnt @ y
+
+output:
+5this
+
+
+
+2)
+x = 3
+y = 4
+prntln @ x
+prntln @
+prntln @ y
+
+output:
+3
+
+4
+
+
+
+3)
+x = 3
+y = 4
+x + y
+
+output:
+7
+
+
+
+4)
+x = 1
+y = x + 3
+prnt @ y
+
+output:
+4
+
+
+
+5)
+x = 5
+x = x * 5
+x = x * 5
+x = x * 5
+prntln @ x
+
+output:
+625
+
+
+
+6)
+x = 3
+y = 0
+
+while @ x >>== y :
+y = y + 2
+x = x + 1
+end
+
+prnt @ "First Loop y Value: "
+prntln @ y
+
+
+x = 1
+y = 0
+
+while @ x >>== y :
+y = y + 3
+x = x + 2
+end
+
+prnt @ "Second Loop y Value: "
+prntln @ y
