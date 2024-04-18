@@ -43,58 +43,44 @@ public class Parser {
 
         if(isInputCommand(command)){
             newTokens[0] = "*input_c";
-            System.out.println("Input Command");
         }
         else if(isLoopStatement(command)){
             newTokens[0] = "*loop_s";
-            System.out.println("Loop Statement");
         }
         else if(isPrintFunction(command)){
             newTokens[0] = "*print_f";
-            System.out.println("Print Command");
         }
         else if(isPrintLineFunction(command)){
             newTokens[0] = "*println_f";
-            System.out.println("Print Line Command");
         }
         else if(isFunctionCall(command)){
             newTokens[0] = "*func_c";
-            System.out.println("Function Call");
         }
         else if(isComparisonExpression(command)){
             newTokens[0] = "*comp_e";
-            System.out.println("Comparison Expression");
         }
         else if(isOperatorExpression(command)){
             newTokens[0] = "*op_e";
-            System.out.println("Operator Expression");
         } 
         else if(isVariableAssignment(command)){
             newTokens[0] = "*var_a";
-            System.out.println("Variable Assignment");
         } 
         else if(isStringVarAssignment(command)) {
             newTokens[0] = "*s_var_a";
-            System.out.println("String Variable Assignment");
         }
         else if(isVariableOperatorAssignment(command)) {
             newTokens[0] = "*var_op_a";
-            System.out.println("Variable Operator Assignment");
         }
         else if (isBoolOperatorExpression(command)){
             newTokens[0] = "*b_op_e";
-            System.out.println("Boolean Operator Expression");
         }
         else if (isNotExpression(command)){
             newTokens[0] = "*not_e";
-            System.out.println("Boolean 'Not' Expression");
         }
         else if (isBooleanVariableOperatorAssignment(command)){
             newTokens[0] = "*b_var_op_a";
-            System.out.println("Boolean Variable Operator Assignment");
         }        
         else{
-            System.out.println("Ignored");
             return null;
         }
 
@@ -112,15 +98,25 @@ public class Parser {
 
     	// Store the two lines in a string array
     	String[] result = {firstLine, functionBody};
-
-        String[] newTokens = new String[result.length + 1];
-        
-        for (String part : result) {
-            System.out.println(part);
-        }
         
         System.out.println("Function Creation");
         return result;
+    }
+    
+    public static String[] parseLoop(String first, String loop) {
+    	String trimmedInput = loop.replaceFirst("^while\\s*@\\s+", "").replaceAll("\\s*end;$", "loop");
+    	String[] parts = trimmedInput.split("\\s*:\\s*", 2);
+
+    	StringBuilder resultBuilder = new StringBuilder();
+
+    	resultBuilder.append(parts[1]).append("; "); 
+    	resultBuilder.append(parts[0]).append(";"); 
+
+    	String result = resultBuilder.toString();
+    	
+    	String[] res = {first, result};
+
+    	return res;
     }
 
     // "Parses" an ENTIRE iffy-then-else statement (into lines)
@@ -139,7 +135,7 @@ public class Parser {
     	return false;
     }
     
-    private static boolean isLoopStatement(String command) {
+    public static boolean isLoopStatement(String command) {
         String[] tokens = command.split("\\s+");
         String prnt = tokens[0];
         return (isLoopWord(prnt) && isFunctionCall(command));
@@ -205,7 +201,7 @@ public class Parser {
     private static boolean isAtSymbol(String command){
         return command.equals("@");
     }
-
+   
     // Checks for an Iffy Command
     public static boolean isIffyCommand(String command){
         String[] tokens = command.split("\\s+");

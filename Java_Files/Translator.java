@@ -12,6 +12,10 @@ public class Translator {
 
     // Parser Instance
     private static Parser parser = new Parser();
+    
+    private static int stored_loop_num = 1;
+    private static int run_loop_num = 1;
+    private static String loop_statement_name = "Function_Loop_Name_" + stored_loop_num;
 
     // Contains every parsed command
     private static List<String[]> parsedCommandsList = new ArrayList<>();
@@ -38,7 +42,34 @@ public class Translator {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
-            	if(Parser.isFunctionCreation(line)) {
+                if (Parser.isLoopStatement(line)) {
+                	String[] parsing = Parser.parseCommand(line);
+
+                    if(parsing != null) {
+        				parsedCommandsList.add(parsing);
+                	}
+                                       
+                    StringBuilder resultBuilder = new StringBuilder();
+                    resultBuilder.append(line.trim()).append(" ");
+                    while ((line = reader.readLine()) != null) {
+                        if (line.trim().equals("end")) {
+                            resultBuilder.append(line.trim()).append(";");
+                            break;
+                        }                
+                        resultBuilder.append(line.trim()).append(";");
+                    }
+                    String input = resultBuilder.toString().trim();
+
+                	String[] func_parsing = Parser.parseLoop(loop_statement_name, input);
+                	
+                	if(func_parsing != null) {
+                		functionsList.add(func_parsing);
+                	}
+                	
+                	stored_loop_num += 1;
+                	loop_statement_name = "Function_Loop_Name_" + stored_loop_num;
+                }
+                else if(Parser.isFunctionCreation(line)) {
                     StringBuilder resultBuilder = new StringBuilder();
                     resultBuilder.append(line.trim()).append(" ");
                     while ((line = reader.readLine()) != null) {
@@ -110,8 +141,9 @@ public class Translator {
         if(head.equals("*iffy_c")){
             performIffy(command);
         } 
-        else if (head.equals("*input_c")){
-
+        else if (head.equals("*loop_s")){
+        	runLoop(command);
+        	run_loop_num += 1;
         } 
         else if (head.equals("*print_f")){
         	printFunction(command);
@@ -229,7 +261,40 @@ public class Translator {
     	    }
     	}
     }
+    
+    private static void runLoop(String[] str) {
+    	String funcName = "Function_Loop_Name_" + run_loop_num;
+    	for (String[] function : functionsList) {
+    		String firstWord = function[0].trim().split("\\s+")[0].replaceAll(";", "");
+    	    if (firstWord.equals(funcName)) {
+    	    	String functionBody = function[1];
+    	    	String[] lines = functionBody.split(";");
+	    	    List<String[]> tempCommandsList = new ArrayList<>();
 
+    	    	for (String line : lines) {
+    	    	    line = line.trim();
+    	    	    if(line.equals("loop")) {
+    	    	    	break;
+    	    	    }
+                	String[] parsing = Parser.parseCommand(line);
+                    if(parsing != null) {
+                    	tempCommandsList.add(parsing);
+                	}
+    	    	}
+	    	    runAllParsedCommands(tempCommandsList);
+	    	    if(checkLoop(lines[lines.length-1].trim())) {
+	    	    	runLoop(str);
+	    	    }
+    	    }
+    	}
+    }
+    
+    private static boolean checkLoop(String s) {
+    	String[] str = Parser.parseCommand(s);
+        String[] command = Arrays.copyOfRange(str, 1, str.length);
+
+    	return newComparisonCommand(command);
+    }
 
     // Assigns a new variable within the tuple list
     private static void newStringVariableAssignment(String[] str) {
@@ -260,7 +325,6 @@ public class Translator {
     private static Integer newOperatorCommand(String [] str) {
     	int first;
     	int second;
-    	
     	
     	if(isInteger(str[0])) {
     		first = Integer.parseInt(str[0]);
