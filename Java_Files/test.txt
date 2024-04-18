@@ -6,6 +6,10 @@ y = y + 2
 x = x + 1
 end
 
+prnt @ "First Loop y Value: "
+prntln @ y
+
+
 x = 1
 y = 0
 
@@ -14,5 +18,5 @@ y = y + 3
 x = x + 2
 end
 
-prnt @ "Final Value: "
+prnt @ "Second Loop y Value: "
 prntln @ y
