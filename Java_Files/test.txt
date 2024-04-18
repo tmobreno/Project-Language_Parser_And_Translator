@@ -1,5 +1,10 @@
-input
 x = 1
-x = ia + x
+y = 1
 
-prntln @ x
+myFunc (a, b) :
+b = b + 3
+a = a + 2
+prntln @ a
+end
+
+myFunc @ x, y

@@ -78,3 +78,12 @@ end
 
 prnt @ "Second Loop y Value: "
 prntln @ y
+
+
+
+7)
+input
+x = 1
+x = ia + x
+
+prntln @ x

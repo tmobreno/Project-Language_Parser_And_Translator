@@ -334,10 +334,16 @@ public class Translator {
     private static void newVariableAssignment(String[] str) {
     	String var = str[0];
         Object value = null;
-        if(checkTupleList(var, str[2])){
+        Object set = str[2];
+        for (Tuple<String, Object> tuple : tupleList) {
+            if (tuple.first.equals(str[2])) {
+            	set = tuple.second;
+            }
+        }
+        if(checkTupleList(var, set.toString())){
             return;
         } else{
-            Tuple<String, Object> t = new Tuple(var, checkValue(str[2]));
+            Tuple<String, Object> t = new Tuple(var, checkValue(set.toString()));
             tupleList.add(t);
         }
     }
