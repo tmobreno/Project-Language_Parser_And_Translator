@@ -41,11 +41,7 @@ public class Parser {
         String[] tokens = command.split("\\s+");
         String[] newTokens = new String[tokens.length + 1];
 
-    	if(isIffyCommand(command)){
-            newTokens[0] = "*iffy_c";
-            System.out.println("Iffy Command");
-        }
-        else if(isInputCommand(command)){
+        if(isInputCommand(command)){
             newTokens[0] = "*input_c";
             System.out.println("Input Command");
         }
@@ -126,6 +122,17 @@ public class Parser {
         System.out.println("Function Creation");
         return result;
     }
+
+    // "Parses" an ENTIRE iffy-then-else statement (into lines)
+    public static String[] parseIffy (String allLines){
+        String[] lines = allLines.split(";;;");
+
+        String[] retval = new String[lines.length + 1];
+        retval[0] = "*iffy_c";
+        System.arraycopy(lines, 0, retval, 1, lines.length);
+
+        return retval;
+    }
     
     // Checks for input command
     private static boolean isInputCommand(String command) {
@@ -200,15 +207,46 @@ public class Parser {
     }
 
     // Checks for an Iffy Command
-    private static boolean isIffyCommand(String command){
+    public static boolean isIffyCommand(String command){
         String[] tokens = command.split("\\s+");
-        if(tokens.length < 5){
+        if(tokens.length < 3){
             return false;
         }
         String iffy = tokens[0];
-        String compExpr = tokens[1] + " " + tokens[2] + " " + tokens[3];
-        String then = tokens[4];
-        return(isIffyWord(iffy) && isComparisonExpression(compExpr) && isThenWord(then));
+        int i = 1;
+        String bool_e = "";
+        while ((i < tokens.length) && !(isThenWord(tokens[i]))){
+            bool_e += tokens[i] + " ";
+            i += 1;
+        }
+        return(isIffyWord(iffy) && isBooleanExpression(bool_e));
+    }
+
+    // Checks for an 'else iffy' Command
+    public static boolean isElseIffyCommand(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length < 4){
+            return false;
+        }
+        String el = tokens[0];
+        String iffy = tokens[1];
+
+        int i = 2;
+        String bool_e = "";
+        while ((i < tokens.length) && !(isThenWord(tokens[i]))){
+            bool_e += tokens[i] + " ";
+            i += 1;
+        }
+        return(isElseWord(el) && isIffyWord(iffy) && isBooleanExpression(bool_e));
+    }
+
+    // Checks for an 'else' line/command
+    public static boolean isElseCommand(String command){
+        String[] tokens = command.split("\\s+");
+        if(tokens.length != 1){
+            return false;
+        }
+        return(isElseWord(tokens[0]));
     }
 
     // Checks for the word "iffy"
@@ -219,6 +257,11 @@ public class Parser {
     // Checks for the word "then"
     private static boolean isThenWord(String command){
         return command.equals("then");
+    }
+
+    // Checks for the word "then"
+    private static boolean isElseWord(String command){
+        return command.equals("else");
     }
 
     // Checks for operator expression pattern match (+ - *)
@@ -314,7 +357,6 @@ public class Parser {
         String[] tokens = command_trunc.split("\\s+");
 
         if (tokens.length < 1){
-            // if given empty command; shouldn't happen?
             System.out.println("PROBLEM! (in isBooleanExpression)");
             return false;
         }
@@ -369,7 +411,7 @@ public class Parser {
     // Assign var based on an operation
     private static boolean isVariableOperatorAssignment(String command){
         String[] tokens = command.split("\\s+");
-        if(tokens.length < 4){    // changed from 3 to 4 because tokens[3] caused error
+        if(tokens.length < 4){  
             return false;
         }
         String var1 = tokens[0];

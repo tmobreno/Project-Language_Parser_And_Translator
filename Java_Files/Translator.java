@@ -56,6 +56,24 @@ public class Translator {
                 		functionsList.add(parsing);
                 	}
             	}
+                else if (Parser.isIffyCommand(line)) {
+                    StringBuilder allLines = new StringBuilder();
+                    allLines.append(line.trim()).append(";;;");
+
+                    while ((line = reader.readLine()) != null) {
+                        if (line.trim().equals("end")) {
+                            break; 
+                        } 
+                        allLines.append(line.trim()).append(";;;");
+                    }
+
+                    String allLines_str = allLines.toString().trim();
+                    String[] parsing = Parser.parseIffy(allLines_str);
+
+                    if (parsing != null){
+                        parsedCommandsList.add(parsing);
+                    }
+                } 
             	else {
                     // Translate each line and write to the output file
                 	String[] parsing = Parser.parseCommand(line);
@@ -90,7 +108,7 @@ public class Translator {
         	performFunction(command);
         }
         if(head.equals("*iffy_c")){
-
+            performIffy(command);
         } 
         else if (head.equals("*input_c")){
 
@@ -130,6 +148,51 @@ public class Translator {
             newVariableAssignment(command);
         }
     }
+
+    // Executes a full iffy statement
+    private static void performIffy(String allLines[]){
+        // allLines is a str list of each UNPARSED line
+        if (allLines.length < 2){ 
+            return;
+        }
+
+        String startIffyLine = allLines[0];
+        String[] bodyToEnd = Arrays.copyOfRange(allLines, 1, allLines.length);
+        // bodyToEnd is all the lines after the first initial "iffy" line.
+
+        // FIND BOOL EXPR:
+        String bool_expr = getBoolExprFromIffy(startIffyLine);
+        boolean eval = doBoolCommand(bool_expr.split("\\s+"));
+        // INITIALIZE:
+        boolean ignore = !eval;
+        boolean hasHadTrue = eval;
+        // ITERATE THROUGH "bodyToEnd" AND RUN COMMANDS:
+        for (String line : bodyToEnd) {
+            if (Parser.isElseIffyCommand(line.trim())){
+                if (hasHadTrue){
+                    ignore = true;
+                } else{
+                    bool_expr = getBoolExprFromIffy(line);
+                    eval = doBoolCommand(bool_expr.split("\\s+"));
+                    if (eval){
+                        ignore = false;
+                        hasHadTrue = true;
+                    } else {
+                        ignore = true;
+                    }
+                }
+            } else if (Parser.isElseCommand(line)){
+                    ignore = hasHadTrue;
+            } else{
+                if (!ignore){
+                    String[] parsing = Parser.parseCommand(line);
+                    if (parsing != null){
+                        runCommand(parsing);
+                    }
+                }
+            }
+        }
+    }
     
     private static void performFunction(String[] str) {
     	String funcName = str[0];
@@ -166,7 +229,7 @@ public class Translator {
     	    }
     	}
     }
-    
+
 
     // Assigns a new variable within the tuple list
     private static void newStringVariableAssignment(String[] str) {
@@ -453,7 +516,6 @@ public class Translator {
 
     // calls correct boolean function and returns evaluated return val
     private static boolean doBoolCommand(String[] command){
-        
         boolean res;
 
         if (command.length == 1){
@@ -465,16 +527,30 @@ public class Translator {
                 // it's a var you need to go access. 
                 res = getObjectAsBool(command[0]);
             }
-        }
-        else if (command[0].equals("~")) { 
+        } else if (command[0].equals("~")) { 
             res = newBoolNotCommand(command);
-        }
-        else if (!(command[1].equals("&")) && !(command[1].equals("//"))) {
+        } else if (!(command[1].equals("&")) && !(command[1].equals("//"))) {
             res = newComparisonCommand(command);
-        }
-        else{ 
+        } else { 
             res = newBoolOperatorCommand(command);
         }        
         return res;
+    }
+
+    // returns the boolean expression from EITHER 'iffy' OR 'else iffy'
+    private static String getBoolExprFromIffy(String iffy_command){
+        String[] command = iffy_command.split("\\s+");
+        int i;
+        if (command[0].equals("iffy")){   // it's only "iffy"
+            i = 1;
+        } else                        {   // then it's "else iffy"
+            i = 2;
+        }
+        String expr = "";
+        while ((i < command.length) && (!command[i].equals("then"))){
+            expr += command[i] + " ";
+            i += 1;
+        }
+        return expr;
     }
 } 
