@@ -87,3 +87,19 @@ x = 1
 x = ia + x
 
 prntln @ x
+
+
+
+8)
+x = 1
+y = 1
+
+myFunc (a, b) :
+y = b + 3
+x = a + 2
+prntln @ x
+end
+
+while @ x >>== y :
+myFunc @ x, y
+end

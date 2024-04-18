@@ -86,7 +86,7 @@ public class Translator {
                 	if(func_parsing != null) {
                 		functionsList.add(func_parsing);
                 	}
-                	
+
                 	stored_loop_num += 1;
                 	loop_statement_name = "Function_Loop_Name_" + stored_loop_num;
                 }
