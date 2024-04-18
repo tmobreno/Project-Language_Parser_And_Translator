@@ -42,6 +42,27 @@ public class Translator {
         try (BufferedReader reader = new BufferedReader(new FileReader(inputFileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
+            	if(line.trim().equals("input")) {
+            		String param_name = "i";
+                    char letter = 'a';
+
+                    Scanner scanner = new Scanner(System.in);
+                    String input;
+                    while (true) {
+                        System.out.println("Enter input (type 'end' to finish): ");
+                        input = scanner.nextLine();
+                        if (input.equals("end")) {
+                            break; // Exit the loop if input is "end"
+                        }
+                        String newLine = param_name + letter + " = " + input;
+                    	String[] parsing = Parser.parseCommand(newLine);
+                        if(parsing != null) {
+            				parsedCommandsList.add(parsing);
+                    	}
+                        letter++;
+                    }
+                    scanner.close();
+            	}
                 if (Parser.isLoopStatement(line)) {
                 	String[] parsing = Parser.parseCommand(line);
 
