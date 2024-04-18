@@ -12,10 +12,6 @@ public class Translator {
 
     // Parser Instance
     private static Parser parser = new Parser();
-    
-    private static int stored_loop_num = 1;
-    private static int run_loop_num = 1;
-    private static String loop_statement_name = "Function_Loop_Name_" + stored_loop_num;
 
     // Contains every parsed command
     private static List<String[]> parsedCommandsList = new ArrayList<>();
@@ -65,6 +61,7 @@ public class Translator {
             	}
                 if (Parser.isLoopStatement(line)) {
                 	String[] parsing = Parser.parseCommand(line);
+                	String firstLine = line;
 
                     if(parsing != null) {
         				parsedCommandsList.add(parsing);
@@ -72,23 +69,49 @@ public class Translator {
                                        
                     StringBuilder resultBuilder = new StringBuilder();
                     resultBuilder.append(line.trim()).append(" ");
+                    
                     while ((line = reader.readLine()) != null) {
+                        if (Parser.isLoopStatement(line)) {
+                        	String[] par = Parser.parseCommand(line);
+                        	String firs = line;
+                            resultBuilder.append(line.trim()).append(";");
+
+                            if(par != null) {
+                				parsedCommandsList.add(par);
+                        	}
+                                               
+                            StringBuilder res = new StringBuilder();
+                            res.append(line.trim()).append(" ");
+                            while ((line = reader.readLine()) != null) {
+                                if (line.trim().equals("end")) {
+                                	res.append(line.trim()).append(";");
+                                    break;
+                                }                
+                                res.append(line.trim()).append(";");
+                            }
+                            String input = res.toString().trim();
+
+                        	String[] func_parsing = Parser.parseLoop(firs, input);
+                        	                	
+                        	if(func_parsing != null) {
+                        		functionsList.add(func_parsing);
+                        	}
+                        	continue;
+                        }
                         if (line.trim().equals("end")) {
                             resultBuilder.append(line.trim()).append(";");
                             break;
                         }                
                         resultBuilder.append(line.trim()).append(";");
                     }
+                    
                     String input = resultBuilder.toString().trim();
 
-                	String[] func_parsing = Parser.parseLoop(loop_statement_name, input);
-                	
+                	String[] func_parsing = Parser.parseLoop(firstLine, input);                	
+                	                	
                 	if(func_parsing != null) {
                 		functionsList.add(func_parsing);
                 	}
-
-                	stored_loop_num += 1;
-                	loop_statement_name = "Function_Loop_Name_" + stored_loop_num;
                 }
                 else if(Parser.isFunctionCreation(line)) {
                     StringBuilder resultBuilder = new StringBuilder();
@@ -155,7 +178,7 @@ public class Translator {
         // Create an array without the indicator head
         // Run functions based on this since it contains the actual full parsed command
         String[] command = Arrays.copyOfRange(str, 1, str.length);
-
+        
         if(head.equals("*func_c")) {
         	performFunction(command);
         }
@@ -164,7 +187,6 @@ public class Translator {
         } 
         else if (head.equals("*loop_s")){
         	runLoop(command);
-        	run_loop_num += 1;
         } 
         else if (head.equals("*print_f")){
         	printFunction(command);
@@ -284,9 +306,10 @@ public class Translator {
     }
     
     private static void runLoop(String[] str) {
-    	String funcName = "Function_Loop_Name_" + run_loop_num;
+    	String s = str[0] + " " + str[1] + " " + str[2] + " " + str[3] + " " + str[4] + " " + str[5];
+    	String funcName = s;
     	for (String[] function : functionsList) {
-    		String firstWord = function[0].trim().split("\\s+")[0].replaceAll(";", "");
+    		String firstWord = function[0];
     	    if (firstWord.equals(funcName)) {
     	    	String functionBody = function[1];
     	    	String[] lines = functionBody.split(";");

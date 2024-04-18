@@ -1,12 +1,20 @@
 x = 1
 y = 1
+z = 3
 
-myFunc (a, b) :
-y = b + 3
-x = a + 2
-prntln @ x
+
+while @ x <<== 3 :
+
+while @ y <<== z :
+prnt @ "*"
+y = y + 1
 end
 
-while @ x >>== y :
-myFunc @ x, y
+prntln @
+x = x + 1
+y = 1
+z = z + 1
+
 end
+
+prntln @

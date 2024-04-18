@@ -103,3 +103,27 @@ end
 while @ x >>== y :
 myFunc @ x, y
 end
+
+
+
+9)
+x = 1
+y = 1
+z = 3
+
+
+while @ x <<== 3 :
+
+while @ y <<== z :
+prnt @ "*"
+y = y + 1
+end
+
+prntln @
+x = x + 1
+y = 1
+z = z + 1
+
+end
+
+prntln @
