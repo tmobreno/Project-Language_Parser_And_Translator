@@ -451,8 +451,40 @@ public class Translator {
         return (!start_bool);
     }
 
-    // Performs a comparison (on ints)
+    // Performs a comparison (on ALL TYPES)
     private static Boolean newComparisonCommand(String cmd[]){
+        
+        if((isInteger(cmd[0]) || getObjectAsInteger(cmd[0])!=null) && (isInteger(cmd[2]) || getObjectAsInteger(cmd[2])!=null)) {
+    		return newComparisonCommandInts(cmd);
+    	} else if ((isBool(cmd[0]) || getObjectAsBool(cmd[0]) != null) && (isBool(cmd[2]) || getObjectAsBool(cmd[2]) != null)) {
+    		return newComparisonCommandBools(cmd);
+    	}
+        else{
+            String first;
+            String second;
+            if ((getObjectAsString(cmd[0]) != null)){
+                first = getObjectAsString(cmd[0]);
+            } else {
+                first = cmd[0];
+                if (first.charAt(0) != '"'){  
+                    return null;  
+                }
+            }
+            if (getObjectAsString(cmd[2]) != null){
+                second = getObjectAsString(cmd[2]);
+            } else {
+                second = cmd[2];
+                if (second.charAt(0) != '"'){ 
+                    return null; 
+                }
+            }
+            if (!cmd[1].equals("===")){ return null;  }
+            return first.equals(second);
+        }
+    }
+
+    // Performs a comparison on integers only
+    private static Boolean newComparisonCommandInts(String cmd[]){
         int first;
         int second;
 
@@ -470,16 +502,34 @@ public class Translator {
 
         if (cmd[1].equals("<<<")){
             return (first < second);
-        } 
-        if (cmd[1].equals("<<==")){
+        } else if (cmd[1].equals("<<==")){
             return (first <= second);
-        }
-        if (cmd[1].equals(">>>")){
+        } else if (cmd[1].equals(">>>")){
             return (first > second);
-        }
-        if (cmd[1].equals(">>==")){
+        } else if (cmd[1].equals(">>==")){
             return (first >= second);
+        } else if (cmd[1].equals("===")){
+            return (first == second);
         }
+        return null;
+    }
+
+        // Performs a comparison on booleans only
+    private static Boolean newComparisonCommandBools(String cmd[]){
+        boolean first;
+        boolean second;
+
+        if(isBool(cmd[0])) {
+            first = tf_to_fullBool(cmd[0]);
+    	} else {
+    		first = getObjectAsBool(cmd[0]);
+    	}
+    	if(isBool(cmd[2])) {
+    		second = tf_to_fullBool(cmd[2]);
+    	} else {
+    		second = getObjectAsBool(cmd[2]);
+    	}
+
         if (cmd[1].equals("===")){
             return (first == second);
         }
@@ -536,6 +586,17 @@ public class Translator {
         for (Tuple<String, Object> tuple : tupleList) {
             if (tuple.first.equals(searchString)) {
                 return Boolean.parseBoolean(tuple.second.toString());
+            }
+        }
+        return null;
+    }
+
+        // Accesses & returns the string value associated with the given key
+    public static String getObjectAsString(String searchString) {
+        for (Tuple<String, Object> tuple : tupleList) {
+            if (tuple.first.equals(searchString)) {
+                String obj = (String) tuple.second;
+                return obj;
             }
         }
         return null;

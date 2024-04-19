@@ -29,6 +29,9 @@ public class Parser {
     // Pattern matches to input command
     private static Pattern input_command = Pattern.compile("^(inpt(\\s))$");
 
+    // Pattern matches string
+    private static Pattern string_value = Pattern.compile("^\\|.*\\|$");
+
     // Pattern matches to (boolean) not command
     private static Pattern not_value = Pattern.compile("^~$");
     
@@ -204,7 +207,8 @@ public class Parser {
    
     // Checks for an Iffy Command
     public static boolean isIffyCommand(String command){
-        String[] tokens = command.split("\\s+");
+        String rep_command = command.replace('"', '|');
+        String[] tokens = rep_command.split("\\s+");
         if(tokens.length < 3){
             return false;
         }
@@ -283,7 +287,7 @@ public class Parser {
         String operator = tokens[1];
         String var2 = tokens[2];
 
-        return (isVariable(var1) && isComparisonOperator(operator) && isVarOrIntOrBool(var2));
+        return ((isVariable(var1) || isStrStatement(var1)) && isComparisonOperator(operator) && (isVarOrIntOrBool(var2)||isStrStatement(var2)));
     }
 
     // Checks for operator expression pattern match (& /)
@@ -297,7 +301,6 @@ public class Parser {
         String bool2 = tokens[2];
 
         return (isVarOrIntOrBool(bool1) && isBooleanOperatorExpression(bool_op) && isVarOrIntOrBool(bool2));
-        // may need to change the return (specifically checking bool1 and bool2); just want it to work for vars AND bools
     }
 
     // Checks for a boolean not expression (~)
@@ -311,7 +314,6 @@ public class Parser {
         String bool_var = tokens[1];
 
         return (isNotOperator(not_op) && isVarOrIntOrBool(bool_var));
-        // may need to change return: isVariable() doesn't check if it's boolean var so could be any type?
     }
 
     // Assign var based on an operation
@@ -482,6 +484,10 @@ public class Parser {
     private static boolean isNotOperator (String str){
         return not_value.matcher(str).matches();
     }
-    
+
+    // if string from a conditional (starts & ends w/ '|')
+     private static boolean isStrStatement (String str){
+        return string_value.matcher(str).matches();
+    }
 }
     
