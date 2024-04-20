@@ -2,7 +2,7 @@ x = 1
 y = 1
 z = 3
 
-while @ x <<== 2 :
+while @ x <<== 3 :
 
 while @ y <<== z :
 prnt @ "*"
@@ -15,5 +15,3 @@ y = 1
 z = z + 1
 
 end
-
-prntln @

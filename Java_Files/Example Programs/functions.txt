@@ -1,0 +1,46 @@
+1)
+x = 1
+y = 1
+
+myFunc (a, b) :
+y = b + 3
+x = a + 2
+prntln @ y
+prntln @ x
+end
+
+myFunc @ x, y
+
+output:
+4
+3
+
+
+2)
+input
+x = 2
+
+myFunc (a, b) :
+x = x * a
+x = x * b
+prntln @ x
+end
+
+myFunc @ ia, ib
+
+output:
+'ia * 2 * ib'
+for example, ia = 2 and ib = 3 gives output: 12
+
+
+3)
+input
+myFunc (a) :
+x = a * a
+prntln @ x
+end
+
+myFunc @ ia
+
+output:
+'ia^2'

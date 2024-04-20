@@ -1,0 +1,45 @@
+1)
+x = 3
+y = 4
+x = x + y
+prntln @ x
+
+output:
+7
+
+
+2)
+x = 4
+y = 2
+x = x - y
+prntln @ x
+
+output:
+2
+
+
+3)
+x = 9 / 3
+prntln @ x
+
+output:
+3
+
+
+4)
+x = 3 * 4
+prntln @ x
+
+output:
+12
+
+
+5)
+x = 5
+x = x * 5
+x = x * 5
+x = x * 5
+prntln @ x
+
+output:
+625

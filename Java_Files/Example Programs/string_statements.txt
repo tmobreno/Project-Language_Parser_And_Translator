@@ -1,0 +1,38 @@
+1)
+x = 5
+y = "this"
+prnt @ x
+prnt @ y
+
+output:
+5this
+
+
+2)
+y = "statement"
+prnt @ y
+prntln @ y
+
+output:
+statement statement
+
+
+3)
+x = "x-value"
+prntln @ x
+prntln @
+prntln @ x
+
+output:
+x-value
+
+x-value
+
+
+4)
+x = "random"
+y = x
+prntln @ y
+
+output:
+random

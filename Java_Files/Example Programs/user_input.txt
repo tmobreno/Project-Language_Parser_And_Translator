@@ -1,0 +1,39 @@
+// when writing input at the start of the file, running the code will ask for user input
+// input designated by ia, ib, ic, id, etc...
+// therefore, the first input will be ia, second ib, third ic, etc...
+
+
+1)
+input
+x = 1
+x = ia + x
+
+prntln @ x
+
+output:
+'value of ia'
+
+
+2)
+input
+x = 2
+y = 3
+x = x * ia
+y = y * x
+
+prntln @ y
+
+output:
+'value of ia * 2 * 3'
+
+
+3)
+input
+x = ia + ib
+y = ic
+z = x + y
+
+prntln @ z
+
+output:
+'value of ia + ib + ic'
