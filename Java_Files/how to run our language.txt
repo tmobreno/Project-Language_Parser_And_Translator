@@ -11,7 +11,14 @@ java Translator test.txt
 
 Which is a file you can run to try. It runs a double loop.
 
-
+You can have the program enter your own input by just writing "input" without the quotations.
+Then, each number you type will correspond to a variable:
+ia
+ib
+ic
+id
+...
+So whatever number you type first will become the value of ia in your program, second number for ib, etc.
 
 Commands:
 javac Translator.java Parser.java Tuple.java
