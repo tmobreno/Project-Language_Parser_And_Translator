@@ -1,0 +1,18 @@
+javac Translator.java Parser.java Tuple.java
+
+Use the above javac command in a java compiler (such as lectura) and compile all three.
+The translator, the parser, and tuple.
+
+Then to run your file, use:
+java Translator your_file.txt
+
+So for example:
+java Translator test.txt
+
+Which is a file you can run to try. It runs a double loop.
+
+
+
+Commands:
+javac Translator.java Parser.java Tuple.java
+java Translator your_file.txt
