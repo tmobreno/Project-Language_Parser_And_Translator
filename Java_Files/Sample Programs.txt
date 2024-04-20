@@ -88,6 +88,8 @@ x = ia + x
 
 prntln @ x
 
+// ia holds the value of the first input you type
+
 
 
 8)
