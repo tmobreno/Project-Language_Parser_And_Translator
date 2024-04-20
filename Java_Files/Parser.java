@@ -102,7 +102,6 @@ public class Parser {
 		// Store the two lines in a string array
 		String[] result = { firstLine, functionBody };
 
-		System.out.println("Function Creation");
 		return result;
 	}
 
