@@ -229,7 +229,8 @@ public class Parser {
 	 * Checks for an 'else iffy' Command
 	 */
 	public static boolean isOtherIffyCommand(String command) {
-		String[] tokens = command.split("\\s+");
+		String rep_command = command.replace('"', '|');
+		String[] tokens = rep_command.split("\\s+");
 		if (tokens.length < 4) {
 			return false;
 		}
@@ -472,7 +473,8 @@ public class Parser {
 		String operator = tokens[1];
 		String var2 = tokens2[1];
 
-		if (var2.charAt(0) != '"') {
+		// if 
+		if ((var2.length() < 1) || (var2.charAt(0) != '"')) {
 			return false;
 		}
 
