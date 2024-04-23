@@ -1,0 +1,66 @@
+s = "Success!"
+uhoh = "Uh oh!"
+
+a = 5
+b = 7
+
+x = t
+y = f
+
+iffy t then
+prntln @ s
+other 
+prntln @ uhoh
+end
+
+iffy y then
+prntln @ uhoh
+other iffy x then
+prntln @ s
+other
+prntln @ uhoh
+end 
+
+iffy x // y then
+myvar = 4
+mynewvar = myvar + 1
+prntln @ mynewvar
+end
+
+iffy x & t then
+t = "Hello, world!"
+prntln @ t
+end
+
+iffy ~ y then
+prntln @ s
+other iffy y then
+prntln @ uhoh
+other
+prntln @ uhoh
+end
+
+z = x & y
+
+iffy z then
+prntln @ uhoh
+other iffy ~ z then
+prntln @ s
+other 
+prntln @ uhoh
+end
+
+iffy a === b then
+prntln @ uhoh
+other 
+prntln @ s
+end
+
+iffy a >>== b then
+prntln @ uhoh
+other
+prntln @ s
+end
+
+iffy 3 <<< 4 then
+end

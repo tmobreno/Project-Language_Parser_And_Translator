@@ -1,0 +1,57 @@
+// 3-GUESS COMMAND LINE GUESSING GAME:
+// Set variable "x" to be the value to guess.
+// Run the program, and use the first 3 input
+// prompts to guess what the number is, then 
+// type "end". 
+// The prog will notify you whether you got
+// the number or not. If so, what guess it
+// was; if not, what the number was. 
+
+
+prompt1 = "Please enter a number, hit enter, type 'end', then hit enter again. Do not show or tell your number to anyone!"
+prompt2 = "Please enter a number to guess, hit enter, type 'end', then hit enter again"
+
+win1 = "You win! Guess #1 was correct...the number was "
+win2 = "You win! Guess #2 was correct...the number was "
+win3 = "You win! Guess #3 was correct...the number was "
+loss = "You lost :( You did not get the number: "
+periodt = "."
+loss2 = " in 3 guesses."
+
+// VALUE TO GUESS:
+x = 20
+
+input
+
+
+iffy ia === x then
+prntln @
+prnt @ win1
+prnt @ x
+prnt @ periodt
+prntln @ 
+other iffy ib === x then 
+prntln @
+prnt @ win2
+prnt @ x
+prnt @ periodt
+prntln @ 
+other iffy ic === x then 
+prntln @
+prnt @ win3
+prnt @ x
+prnt @ periodt
+prntln @ 
+other 
+prntln @
+prnt @ loss
+prnt @ x
+prnt @ loss2
+prntln @ 
+end
+
+prntln @ 
+
+g = "Game over...goodbye!"
+prntln @ g
+prntln @
