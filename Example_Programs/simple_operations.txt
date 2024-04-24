@@ -43,3 +43,11 @@ prntln @ x
 
 output:
 625
+
+
+6)
+x = 4 % 3
+prntln @ x
+
+output:
+1
