@@ -1,0 +1,51 @@
+1)
+x = 5
+y = 7
+y is 8
+x = x + y
+
+prntln @ x
+
+output:
+COMMAND: y is 8
+WARNING: Invalid command at line 3
+12
+
+
+2)
+x = 1
+x += 1
+prntln @ x
+
+output:
+COMMAND: x += 1
+WARNING: Invalid command at line 2
+1
+
+
+3)
+x = ???
+y = 2
+z = 3
+
+output:
+SYNTAX ERROR: cannot assign variable
+COMMAND: x = ???
+WARNING: Invalid command at line 1
+
+
+4)
+x = 1
+while at x <<== 5 :
+x = x + 1
+end
+prntln @ x
+
+output:
+SYNTAX ERROR: invalid loop statement
+SYNTAX ERROR: invalid loop statement
+COMMAND: while at x <<== 5 :
+WARNING: Invalid command at line 2
+COMMAND: end
+WARNING: Invalid command at line 4
+2

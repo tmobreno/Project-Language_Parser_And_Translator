@@ -41,6 +41,8 @@ public class Parser {
 	// Pattern matches to (boolean) not command
 	private static Pattern not_value = Pattern.compile("^~$");
 
+	private static int lineNum = 0;
+	
 	// Direct parse items
 
 	/*
@@ -52,6 +54,7 @@ public class Parser {
 	public static String[] parseCommand(String command) {
 		String[] tokens = command.split("\\s+");
 		String[] newTokens = new String[tokens.length + 1];
+		lineNum++;
 
 		if (isInputCommand(command)) {
 			newTokens[0] = "*input_c";
@@ -79,7 +82,12 @@ public class Parser {
 			newTokens[0] = "*not_e";
 		} else if (isBooleanVariableOperatorAssignment(command)) {
 			newTokens[0] = "*b_var_op_a";
-		} else {
+		} else if (command.trim().length() > 0){
+			System.out.println("COMMAND: " + command);
+			System.out.println("WARNING: Invalid command at line " + lineNum);
+			return null;
+		}
+		else {
 			return null;
 		}
 
@@ -439,6 +447,10 @@ public class Parser {
 	public static boolean isLoopStatement(String command) {
 		String[] tokens = command.split("\\s+");
 		String prnt = tokens[0];
+		if(isLoopWord(prnt) && !isFunctionCall(command)) {
+			System.out.println("SYNTAX ERROR: invalid loop statement");
+			return false;
+		}
 		return (isLoopWord(prnt) && isFunctionCall(command));
 	}
 
@@ -455,6 +467,11 @@ public class Parser {
 		String var1 = tokens[0];
 		String operator = tokens[1];
 		String var2 = tokens[2];
+		
+		if (!isVarOrIntOrBool(var2)) {
+			System.out.println("SYNTAX ERROR: cannot assign variable");
+			return false;
+		}
 		return (isVariable(var1) && isEquivalencyOperator(operator) && isVarOrIntOrBool(var2));
 	}
 

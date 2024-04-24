@@ -18,7 +18,7 @@ public class Translator {
 	// Stores Variable Names along with their value
 	private static List<Tuple<String, Object>> tupleList = new ArrayList<>();
 
-	// Not needed for program, just for testing
+	// Not needed for program, just for testing XXX we do need it
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.out.println("Usage: java Main <inputFile>");
